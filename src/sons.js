@@ -1,41 +1,32 @@
 // 🔊 Fichier qui gère tous les sons de KidApp
 
 // 📖 Prononciation des lettres en français
-// (pour que Rex dise "Bé" et pas "Bi" en anglais)
 const PRONONCIATION = {
-  'A': 'A',
-  'B': 'Bé',
-  'C': 'Cé',
-  'D': 'Dé',
-  'E': 'E',
-  'F': 'Èf',
-  'G': 'Jé',
-  'H': 'Ash',
-  'I': 'I',
-  'J': 'Ji',
-  'K': 'Ka',
-  'L': 'Èl',
-  'M': 'Èm',
-  'N': 'Èn',
-  'O': 'O',
-  'P': 'Pé',
-  'Q': 'Ku',
-  'R': 'Èr',
-  'S': 'Ès',
-  'T': 'Té',
-  'U': 'U',
-  'V': 'Vé',
-  'W': 'Double vé',
-  'X': 'Iks',
-  'Y': 'I grèque',
-  'Z': 'Zèd',
+  'A': 'A', 'B': 'Bé', 'C': 'Cé', 'D': 'Dé', 'E': 'E',
+  'F': 'Èf', 'G': 'Jé', 'H': 'Ash', 'I': 'I', 'J': 'Ji',
+  'K': 'Ka', 'L': 'Èl', 'M': 'Èm', 'N': 'Èn', 'O': 'O',
+  'P': 'Pé', 'Q': 'Ku', 'R': 'Èr', 'S': 'Ès', 'T': 'Té',
+  'U': 'U', 'V': 'Vé', 'W': 'Double vé', 'X': 'Iks',
+  'Y': 'I grèque', 'Z': 'Zèd',
 };
+
+// 🔍 Vérifie une préférence dans le localStorage
+function prefActive(cle) {
+  try {
+    const prefs = JSON.parse(localStorage.getItem('kidapp_preferences') || '{}');
+    return prefs[cle] !== false; // true par défaut
+  } catch (e) {
+    return true;
+  }
+}
 
 // 🗣️ Fait parler le navigateur avec une voix française
 export function dire(texte, options = {}) {
   if (!('speechSynthesis' in window)) return;
 
-  // Annule toute parole en cours
+  // Respecte la préférence "voix activée"
+  if (!prefActive('voixActive')) return;
+
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(texte);
@@ -47,13 +38,13 @@ export function dire(texte, options = {}) {
   window.speechSynthesis.speak(utterance);
 }
 
-// 🔤 Dit le nom d'une lettre en français ("Bé", "Cé", etc.)
+// 🔤 Dit le nom d'une lettre en français
 export function direLettre(lettre) {
   const texte = PRONONCIATION[lettre.toUpperCase()] || lettre;
   dire(texte);
 }
 
-// 🖱️ Petit "pop" au clic sur une lettre
+// 🖱️ Petit "pop" au clic
 export function pop() {
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -95,7 +86,7 @@ export function rate() {
   oscillator.stop(audioCtx.currentTime + 0.25);
 }
 
-// 🎉 Fanfare de victoire (arpège joyeux Do-Mi-Sol-Do)
+// 🎉 Fanfare de victoire
 export function fanfare() {
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const notes = [523, 659, 784, 1046];
@@ -120,19 +111,20 @@ export function fanfare() {
   });
 }
 
-// 🎵 Musique d'ambiance : petite mélodie douce en boucle
+// 🎵 Musique d'ambiance
 let musiqueInterval = null;
 let audioCtxMusique = null;
 
 export function demarrerMusique() {
-  // Déjà en cours ? On ne relance pas
+  // Respecte la préférence "musique activée"
+  if (!prefActive('musiqueActive')) return;
+
   if (musiqueInterval) return;
 
   if (!audioCtxMusique) {
     audioCtxMusique = new (window.AudioContext || window.webkitAudioContext)();
   }
 
-  // Une petite mélodie douce (gamme de Do majeur, montée/descente)
   const melodie = [523, 587, 659, 698, 784, 698, 659, 587];
   let index = 0;
 

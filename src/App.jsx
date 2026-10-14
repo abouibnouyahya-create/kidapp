@@ -6,10 +6,15 @@ import {
 } from './sons';
 import { NIVEAUX } from './niveaux';
 import { BADGES } from './badges';
+import {
+  chargerPreferences, sauvegarderPreferences,
+  THEMES, PERSONNAGES
+} from './preferences';
+import EcranPreferences from './EcranPreferences';
 import renard from './assets/renard.png';
 import './App.css';
 
-const OBJECTIF = 10; // 10 bonnes réponses = victoire
+const OBJECTIF = 10;
 
 function melanger(tableau) {
   return [...tableau].sort(() => Math.random() - 0.5);
@@ -43,6 +48,15 @@ function Decor() {
   );
 }
 
+// 🦊 Composant qui affiche le bon personnage (image ou emoji)
+function Mascotte({ personnage, className }) {
+  const p = PERSONNAGES[personnage] || PERSONNAGES.renard;
+  if (p.fichier === 'renard.png') {
+    return <img src={renard} alt={p.nom} className={className} />;
+  }
+  return <div className={className + ' mascotte-emoji'}>{p.emoji}</div>;
+}
+
 function App() {
   const [ecran, setEcran] = useState('accueil');
   const [niveauActuel, setNiveauActuel] = useState('lettres');
@@ -54,17 +68,26 @@ function App() {
   const [badgesDebloques, setBadgesDebloques] = useState([]);
   const [badgeAffiche, setBadgeAffiche] = useState(null);
 
-  // 🎵 Musique
+  // ⚙️ Préférences
+  const [prefs, setPrefs] = useState(() => chargerPreferences());
+
+  // 💾 Sauvegarde automatique + application du thème
   useEffect(() => {
-    if (ecran === 'jeu') {
+    sauvegarderPreferences(prefs);
+    const theme = THEMES[prefs.couleur] || THEMES.orange;
+    document.body.style.background = theme.fond;
+  }, [prefs]);
+
+  // 🎵 Musique selon l'écran
+  useEffect(() => {
+    if (ecran === 'jeu' && prefs.musiqueActive) {
       demarrerMusique();
     } else {
       arreterMusique();
     }
     return () => arreterMusique();
-  }, [ecran]);
+  }, [ecran, prefs.musiqueActive]);
 
-  // 🏅 Débloque un badge
   const debloquerBadge = (badgeId) => {
     if (badgesDebloques.includes(badgeId)) return;
     setBadgesDebloques([...badgesDebloques, badgeId]);
@@ -100,17 +123,8 @@ function App() {
       dire(item);
       setTimeout(() => dire('Bravo !'), 700);
 
-      // 🌱 Badge première lettre
-      if (nouveauScore === 1) {
-        debloquerBadge('premiere_lettre');
-      }
-
-      // 🔥 Badge série de 5
-      if (nouvelleSerie === 5) {
-        debloquerBadge('serie_5');
-      }
-
-      // 🏅 Badges experts (10 bonnes réponses dans un niveau)
+      if (nouveauScore === 1) debloquerBadge('premiere_lettre');
+      if (nouvelleSerie === 5) debloquerBadge('serie_5');
       if (nouveauScore === OBJECTIF) {
         if (niveauActuel === 'lettres') debloquerBadge('expert_lettres');
         if (niveauActuel === 'minuscules') debloquerBadge('expert_minuscules');
@@ -118,7 +132,6 @@ function App() {
         if (niveauActuel === 'mots') debloquerBadge('champion_mots');
       }
 
-      // 🎉 Écran de victoire à 10 bonnes réponses
       if (nouveauScore >= OBJECTIF) {
         setTimeout(() => {
           lancerConfettis(400);
@@ -135,7 +148,7 @@ function App() {
     } else {
       pop();
       setFeedback('essaie');
-      setSerie(0); // reset la série
+      setSerie(0);
       rate();
       dire('Essaie encore');
 
@@ -173,19 +186,27 @@ function App() {
     setItemClique(null);
   };
 
+  const theme = THEMES[prefs.couleur] || THEMES.orange;
+
   // =============== ÉCRAN ACCUEIL ===============
   if (ecran === 'accueil') {
     return (
       <>
         <Decor />
         <div className="app">
-          <h1 className="titre">KidApp</h1>
-          <img src={renard} alt="Rex le renard" className="mascotte" />
+          <h1 className="titre" style={{ color: theme.couleurPrincipale }}>KidApp</h1>
+          <Mascotte personnage={prefs.personnage} className="mascotte" />
           <p className="message">
-            Salut ! Je suis Rex. Prêt à apprendre à lire en t'amusant ?
+            Salut ! Prêt à apprendre à lire en t'amusant ?
           </p>
           <button className="bouton-jouer" onClick={() => setEcran('niveaux')}>
             📖 JOUER
+          </button>
+          <button
+            className="bouton-jouer bouton-secondaire"
+            onClick={() => setEcran('preferences')}
+          >
+            ⚙️ MES PRÉFÉRENCES
           </button>
           {badgesDebloques.length > 0 && (
             <p className="compteur-badges">
@@ -197,13 +218,25 @@ function App() {
     );
   }
 
+  // =============== ÉCRAN PRÉFÉRENCES ===============
+  if (ecran === 'preferences') {
+    return (
+      <>
+        <Decor />
+        <EcranPreferences prefs={prefs} setPrefs={setPrefs} onRetour={retourAccueil} />
+      </>
+    );
+  }
+
   // =============== ÉCRAN CHOIX DE NIVEAU ===============
   if (ecran === 'niveaux') {
     return (
       <>
         <Decor />
         <div className="app">
-          <h1 className="titre-niveaux">🦊 Choisis ton niveau !</h1>
+          <h1 className="titre-niveaux" style={{ color: theme.couleurPrincipale }}>
+            Choisis ton niveau !
+          </h1>
 
           <div className="liste-niveaux">
             {Object.entries(NIVEAUX).map(([cle, niveau]) => (
@@ -242,15 +275,16 @@ function App() {
         <div className="app">
           <div className="barre-haut">
             <button className="bouton-menu" onClick={retourNiveaux}>☰ Menu</button>
-            <div className="score">⭐ {score} / {OBJECTIF}</div>
+            <div className="score" style={{ color: theme.couleurPrincipale }}>
+              ⭐ {score} / {OBJECTIF}
+            </div>
           </div>
 
-          {/* 🔥 Indicateur de série */}
           {serie >= 2 && (
             <div className="serie">🔥 Série : {serie}</div>
           )}
 
-          <img src={renard} alt="Rex le renard" className="mascotte-jeu" />
+          <Mascotte personnage={prefs.personnage} className="mascotte-jeu" />
           <p className="consigne">{niveau.consigne(manche.cible)}</p>
 
           <div className="zone-lettres">
@@ -275,7 +309,6 @@ function App() {
             {feedback === 'essaie' && <span className="essaie">😅 Essaie encore !</span>}
           </p>
 
-          {/* 🏅 Toast de badge */}
           {badgeAffiche && (
             <div className="toast-badge">
               <span className="toast-emoji">{BADGES[badgeAffiche].emoji}</span>
@@ -296,8 +329,10 @@ function App() {
       <>
         <Decor />
         <div className="app">
-          <h1 className="titre-victoire">🎉 BRAVO ! 🎉</h1>
-          <img src={renard} alt="Rex" className="mascotte-victoire" />
+          <h1 className="titre-victoire" style={{ color: theme.couleurPrincipale }}>
+            🎉 BRAVO ! 🎉
+          </h1>
+          <Mascotte personnage={prefs.personnage} className="mascotte-victoire" />
           <p className="message-victoire">
             Tu as trouvé {OBJECTIF} {NIVEAUX[niveauActuel].nom.toLowerCase()} d'affilée !
           </p>
@@ -315,14 +350,7 @@ function App() {
             🔄 REJOUER
           </button>
           <button
-            className="bouton-jouer"
-            style={{
-              marginTop: '15px',
-              fontSize: '22px',
-              padding: '12px 35px',
-              background: 'linear-gradient(180deg, #2196F3 0%, #1565C0 100%)',
-              boxShadow: '0 8px 0 #0D47A1, 0 12px 20px rgba(0,0,0,0.2)'
-            }}
+            className="bouton-jouer bouton-secondaire"
             onClick={retourNiveaux}
           >
             📚 AUTRE NIVEAU
