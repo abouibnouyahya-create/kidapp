@@ -48,6 +48,22 @@ function Decor() {
   );
 }
 
+// 🌟 Étoiles volantes pour l'écran de victoire
+function EtoilesVictoire() {
+  return (
+    <div className="etoiles-victoire">
+      <div className="etoile-volante">⭐</div>
+      <div className="etoile-volante">🌟</div>
+      <div className="etoile-volante">✨</div>
+      <div className="etoile-volante">⭐</div>
+      <div className="etoile-volante">🌟</div>
+      <div className="etoile-volante">✨</div>
+      <div className="etoile-volante">⭐</div>
+      <div className="etoile-volante">🌟</div>
+    </div>
+  );
+}
+
 function Mascotte({ personnage, className }) {
   const p = PERSONNAGES[personnage] || PERSONNAGES.renard;
   if (p.fichier === 'renard.png') {
@@ -109,7 +125,7 @@ function App() {
   };
 
   const choisirNiveau = (niveau) => {
-    transition();   // 🎼 Son de transition
+    transition();
     pop();
     setNiveauActuel(niveau);
     setManche(nouvelleManche(niveau));
@@ -148,7 +164,7 @@ function App() {
       if (nouveauScore >= OBJECTIF) {
         setTimeout(() => {
           lancerConfettis(400);
-          fanfareLongue();  // 🎉 Fanfare longue
+          fanfareLongue();
           setEcran('victoire');
         }, 1500);
         return;
@@ -174,7 +190,7 @@ function App() {
   };
 
   const rejouerMemeNiveau = () => {
-    transition();   // 🎼 Transition aussi au rejouer
+    transition();
     setScore(0);
     setSerie(0);
     setManche(nouvelleManche(niveauActuel));
@@ -350,6 +366,7 @@ function App() {
     return (
       <>
         <Decor />
+        <EtoilesVictoire />
         <div className="app">
           <h1 className="titre-victoire" style={{ color: theme.couleurPrincipale }}>
             🎉 BRAVO ! 🎉
