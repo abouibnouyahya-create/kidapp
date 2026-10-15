@@ -48,7 +48,6 @@ function Decor() {
   );
 }
 
-// 🦊 Composant qui affiche le bon personnage (image ou emoji)
 function Mascotte({ personnage, className }) {
   const p = PERSONNAGES[personnage] || PERSONNAGES.renard;
   if (p.fichier === 'renard.png') {
@@ -65,27 +64,20 @@ function App() {
   const [score, setScore] = useState(0);
   const [serie, setSerie] = useState(0);
   const [itemClique, setItemClique] = useState(null);
-
-  // 🏅 Badges (chargés depuis le navigateur, persistants)
   const [badgesDebloques, setBadgesDebloques] = useState(() => chargerBadges());
   const [badgeAffiche, setBadgeAffiche] = useState(null);
-
-  // ⚙️ Préférences
   const [prefs, setPrefs] = useState(() => chargerPreferences());
 
-  // 💾 Sauvegarde automatique des préférences + application du thème
   useEffect(() => {
     sauvegarderPreferences(prefs);
     const theme = THEMES[prefs.couleur] || THEMES.orange;
     document.body.style.background = theme.fond;
   }, [prefs]);
 
-  // 💾 Sauvegarde automatique des badges
   useEffect(() => {
     sauvegarderBadges(badgesDebloques);
   }, [badgesDebloques]);
 
-  // 🎵 Musique selon l'écran
   useEffect(() => {
     if (ecran === 'jeu' && prefs.musiqueActive) {
       demarrerMusique();
@@ -204,7 +196,7 @@ function App() {
           <h1 className="titre" style={{ color: theme.couleurPrincipale }}>KidApp</h1>
           <Mascotte personnage={prefs.personnage} className="mascotte" />
           <p className="message">
-            Salut ! Prêt à apprendre à lire en t'amusant ?
+            Salut ! Prêt à apprendre en t'amusant ?
           </p>
           <button className="bouton-jouer" onClick={() => setEcran('niveaux')}>
             📖 JOUER
@@ -297,7 +289,10 @@ function App() {
           <div className="zone-lettres">
             {manche.choix.map((item) => {
               let classe = 'carte-lettre';
-              if (item.length >= 3) classe += ' carte-mot';
+
+              // Adapte la taille de la police selon la longueur
+              if (item.length >= 7) classe += ' carte-long';
+              else if (item.length >= 3) classe += ' carte-mot';
               else if (item.length === 2) classe += ' carte-syllabe';
 
               if (feedback === 'bravo' && item === manche.cible) classe += ' correcte';

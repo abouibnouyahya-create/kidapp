@@ -154,6 +154,23 @@ body {
   animation: secousse 0.4s ease;
 }
 
+/* Taille de police adaptée selon la longueur du texte */
+.carte-lettre.carte-syllabe {
+  font-size: 64px;
+}
+
+.carte-lettre.carte-mot {
+  font-size: 32px;
+  padding: 0 8px;
+}
+
+/* Mots très longs (TRIANGLE, RECTANGLE, VIOLET...) */
+.carte-lettre.carte-long {
+  font-size: 22px;
+  padding: 0 5px;
+  line-height: 1.1;
+}
+
 @keyframes pulse {
   0%   { transform: scale(1); }
   50%  { transform: scale(1.2); }
@@ -308,7 +325,7 @@ body {
 .liste-niveaux {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
   width: 100%;
   max-width: 500px;
 }
@@ -320,7 +337,7 @@ body {
   color: white;
   border: 5px solid white;
   border-radius: 30px;
-  padding: 20px 30px;
+  padding: 15px 25px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -345,7 +362,7 @@ body {
 }
 
 .niveau-nom {
-  font-size: 32px;
+  font-size: 30px;
   flex: 1;
 }
 
@@ -401,15 +418,6 @@ body {
   box-shadow: 0 6px 0 rgba(224, 176, 0, 0.4), 0 10px 15px rgba(0,0,0,0.15);
   animation: rebond 1.5s infinite;
   box-sizing: border-box;
-}
-
-.carte-lettre.carte-syllabe {
-  font-size: 64px;
-}
-
-.carte-lettre.carte-mot {
-  font-size: 36px;
-  padding: 0 10px;
 }
 
 /* ===== 🔥 SÉRIE ===== */
@@ -544,7 +552,6 @@ body {
   margin-top: 5px;
 }
 
-/* ===== 🏅 COMPTEUR DE BADGES SUR L'ACCUEIL ===== */
 .compteur-badges {
   font-family: 'Fredoka', sans-serif;
   font-size: 22px;
@@ -556,6 +563,7 @@ body {
   border-radius: 50px;
   box-shadow: 0 4px 0 #E0B000;
 }
+
 /* ===== ⚙️ ÉCRAN PRÉFÉRENCES ===== */
 .titre-preferences {
   font-family: 'Fredoka', sans-serif;
@@ -584,7 +592,6 @@ body {
   margin: 0 0 15px;
 }
 
-/* 🎨 Couleurs */
 .grille-couleurs {
   display: flex;
   gap: 15px;
@@ -619,7 +626,6 @@ body {
   font-size: 32px;
 }
 
-/* 🦊 Personnages */
 .grille-personnages {
   display: flex;
   gap: 15px;
@@ -666,7 +672,6 @@ body {
   color: #333;
 }
 
-/* 🔊 Bascules ON/OFF */
 .rangee-bascules {
   display: flex;
   gap: 15px;
@@ -700,7 +705,6 @@ body {
   transform: translateY(-2px);
 }
 
-/* ⚙️ Bouton secondaire (préférences, autre niveau...) */
 .bouton-secondaire {
   background: linear-gradient(180deg, #2196F3 0%, #1565C0 100%) !important;
   box-shadow: 0 10px 0 #0D47A1, 0 15px 25px rgba(0,0,0,0.2) !important;
@@ -709,7 +713,6 @@ body {
   margin-top: 15px;
 }
 
-/* 🦊 Mascotte emoji (pour les personnages sans image) */
 .mascotte-emoji {
   display: flex;
   align-items: center;
