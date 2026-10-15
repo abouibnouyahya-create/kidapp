@@ -38,3 +38,24 @@ export const BADGES = {
     description: '5 bonnes réponses d\'affilée',
   },
 };
+// 💾 Fonctions de sauvegarde des badges (localStorage)
+
+const CLE_BADGES = 'kidapp_badges';
+
+export function chargerBadges() {
+  try {
+    const sauvegarde = localStorage.getItem(CLE_BADGES);
+    if (!sauvegarde) return [];
+    return JSON.parse(sauvegarde);
+  } catch (e) {
+    return [];
+  }
+}
+
+export function sauvegarderBadges(badges) {
+  try {
+    localStorage.setItem(CLE_BADGES, JSON.stringify(badges));
+  } catch (e) {
+    console.warn('Impossible de sauvegarder les badges');
+  }
+}

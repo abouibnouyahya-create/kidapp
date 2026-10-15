@@ -5,7 +5,7 @@ import {
   demarrerMusique, arreterMusique
 } from './sons';
 import { NIVEAUX } from './niveaux';
-import { BADGES } from './badges';
+import { BADGES, chargerBadges, sauvegarderBadges } from './badges';
 import {
   chargerPreferences, sauvegarderPreferences,
   THEMES, PERSONNAGES
@@ -65,18 +65,25 @@ function App() {
   const [score, setScore] = useState(0);
   const [serie, setSerie] = useState(0);
   const [itemClique, setItemClique] = useState(null);
-  const [badgesDebloques, setBadgesDebloques] = useState([]);
+
+  // 🏅 Badges (chargés depuis le navigateur, persistants)
+  const [badgesDebloques, setBadgesDebloques] = useState(() => chargerBadges());
   const [badgeAffiche, setBadgeAffiche] = useState(null);
 
   // ⚙️ Préférences
   const [prefs, setPrefs] = useState(() => chargerPreferences());
 
-  // 💾 Sauvegarde automatique + application du thème
+  // 💾 Sauvegarde automatique des préférences + application du thème
   useEffect(() => {
     sauvegarderPreferences(prefs);
     const theme = THEMES[prefs.couleur] || THEMES.orange;
     document.body.style.background = theme.fond;
   }, [prefs]);
+
+  // 💾 Sauvegarde automatique des badges
+  useEffect(() => {
+    sauvegarderBadges(badgesDebloques);
+  }, [badgesDebloques]);
 
   // 🎵 Musique selon l'écran
   useEffect(() => {
