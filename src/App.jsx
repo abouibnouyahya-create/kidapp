@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import {
-  dire, pop, rate, fanfare, direLettre,
+  dire, pop, rate, fanfare, fanfareLongue, transition, direLettre,
   demarrerMusique, arreterMusique
 } from './sons';
 import { NIVEAUX } from './niveaux';
@@ -20,7 +20,6 @@ function melanger(tableau) {
   return [...tableau].sort(() => Math.random() - 0.5);
 }
 
-// 🎲 Nouvelle manche — fonctionne avec des items { texte, emoji }
 function nouvelleManche(niveauActuel) {
   const items = NIVEAUX[niveauActuel].items;
   const bonne = melanger(items)[0];
@@ -57,6 +56,17 @@ function Mascotte({ personnage, className }) {
   return <div className={className + ' mascotte-emoji'}>{p.emoji}</div>;
 }
 
+// 🎵 Choisit un style de musique selon le niveau
+function stylePourNiveau(niveau) {
+  if (niveau === 'lettres' || niveau === 'minuscules' || niveau === 'syllabes') {
+    return 'calme';
+  }
+  if (niveau === 'chiffres') {
+    return 'rythmee';
+  }
+  return 'joyeuse';
+}
+
 function App() {
   const [ecran, setEcran] = useState('accueil');
   const [niveauActuel, setNiveauActuel] = useState('lettres');
@@ -79,14 +89,16 @@ function App() {
     sauvegarderBadges(badgesDebloques);
   }, [badgesDebloques]);
 
+  // 🎵 Musique selon l'écran et le niveau
   useEffect(() => {
     if (ecran === 'jeu' && prefs.musiqueActive) {
-      demarrerMusique();
+      const style = stylePourNiveau(niveauActuel);
+      demarrerMusique(style);
     } else {
       arreterMusique();
     }
     return () => arreterMusique();
-  }, [ecran, prefs.musiqueActive]);
+  }, [ecran, prefs.musiqueActive, niveauActuel]);
 
   const debloquerBadge = (badgeId) => {
     if (badgesDebloques.includes(badgeId)) return;
@@ -97,6 +109,7 @@ function App() {
   };
 
   const choisirNiveau = (niveau) => {
+    transition();   // 🎼 Son de transition
     pop();
     setNiveauActuel(niveau);
     setManche(nouvelleManche(niveau));
@@ -111,7 +124,6 @@ function App() {
     if (feedback !== '') return;
     setItemClique(item);
 
-    // ⚠️ On compare les .texte (car les items sont { texte, emoji })
     if (item.texte === manche.cible.texte) {
       const nouveauScore = score + 1;
       const nouvelleSerie = serie + 1;
@@ -136,6 +148,7 @@ function App() {
       if (nouveauScore >= OBJECTIF) {
         setTimeout(() => {
           lancerConfettis(400);
+          fanfareLongue();  // 🎉 Fanfare longue
           setEcran('victoire');
         }, 1500);
         return;
@@ -161,6 +174,7 @@ function App() {
   };
 
   const rejouerMemeNiveau = () => {
+    transition();   // 🎼 Transition aussi au rejouer
     setScore(0);
     setSerie(0);
     setManche(nouvelleManche(niveauActuel));
@@ -292,7 +306,6 @@ function App() {
             {manche.choix.map((item) => {
               let classe = 'carte-lettre';
 
-              // Adapte la taille selon la longueur du texte
               if (item.texte.length >= 7) classe += ' carte-long';
               else if (item.texte.length >= 3) classe += ' carte-mot';
               else if (item.texte.length === 2) classe += ' carte-syllabe';
