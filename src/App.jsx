@@ -20,10 +20,11 @@ function melanger(tableau) {
   return [...tableau].sort(() => Math.random() - 0.5);
 }
 
+// 🎲 Nouvelle manche — fonctionne avec des items { texte, emoji }
 function nouvelleManche(niveauActuel) {
   const items = NIVEAUX[niveauActuel].items;
   const bonne = melanger(items)[0];
-  const autres = melanger(items.filter(i => i !== bonne)).slice(0, 2);
+  const autres = melanger(items.filter(i => i.texte !== bonne.texte)).slice(0, 2);
   const choix = melanger([bonne, ...autres]);
   return { cible: bonne, choix };
 }
@@ -110,7 +111,8 @@ function App() {
     if (feedback !== '') return;
     setItemClique(item);
 
-    if (item === manche.cible) {
+    // ⚠️ On compare les .texte (car les items sont { texte, emoji })
+    if (item.texte === manche.cible.texte) {
       const nouveauScore = score + 1;
       const nouvelleSerie = serie + 1;
 
@@ -119,7 +121,7 @@ function App() {
       setSerie(nouvelleSerie);
       lancerConfettis();
       fanfare();
-      dire(item);
+      dire(item.texte);
       setTimeout(() => dire('Bravo !'), 700);
 
       if (nouveauScore === 1) debloquerBadge('premiere_lettre');
@@ -290,17 +292,22 @@ function App() {
             {manche.choix.map((item) => {
               let classe = 'carte-lettre';
 
-              // Adapte la taille de la police selon la longueur
-              if (item.length >= 7) classe += ' carte-long';
-              else if (item.length >= 3) classe += ' carte-mot';
-              else if (item.length === 2) classe += ' carte-syllabe';
+              // Adapte la taille selon la longueur du texte
+              if (item.texte.length >= 7) classe += ' carte-long';
+              else if (item.texte.length >= 3) classe += ' carte-mot';
+              else if (item.texte.length === 2) classe += ' carte-syllabe';
 
-              if (feedback === 'bravo' && item === manche.cible) classe += ' correcte';
-              if (feedback === 'essaie' && item === itemClique) classe += ' incorrecte';
+              if (feedback === 'bravo' && item.texte === manche.cible.texte) classe += ' correcte';
+              if (feedback === 'essaie' && itemClique && item.texte === itemClique.texte) classe += ' incorrecte';
 
               return (
-                <div key={item} className={classe} onClick={() => cliquerItem(item)}>
-                  {item}
+                <div
+                  key={item.texte}
+                  className={classe}
+                  onClick={() => cliquerItem(item)}
+                >
+                  {item.emoji && <span className="carte-emoji">{item.emoji}</span>}
+                  <span className="carte-texte">{item.texte}</span>
                 </div>
               );
             })}

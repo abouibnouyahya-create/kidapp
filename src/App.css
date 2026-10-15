@@ -114,6 +114,7 @@ body {
   flex-wrap: wrap;
 }
 
+/* Carte générique */
 .carte-lettre {
   font-family: 'Fredoka', sans-serif;
   font-size: 96px;
@@ -125,12 +126,16 @@ body {
   width: 160px;
   height: 160px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 5px;
+  padding: 8px;
   cursor: pointer;
   box-shadow: 0 8px 0 #E0B000, 0 12px 20px rgba(0,0,0,0.15);
   transition: all 0.15s;
   user-select: none;
+  box-sizing: border-box;
 }
 
 .carte-lettre:hover {
@@ -154,20 +159,19 @@ body {
   animation: secousse 0.4s ease;
 }
 
-/* Taille de police adaptée selon la longueur du texte */
-.carte-lettre.carte-syllabe {
+/* Tailles de texte selon la longueur (s'applique au .carte-texte) */
+.carte-lettre.carte-syllabe .carte-texte {
   font-size: 64px;
 }
 
-.carte-lettre.carte-mot {
+.carte-lettre.carte-mot .carte-texte {
   font-size: 32px;
-  padding: 0 8px;
+  padding: 0 4px;
 }
 
-/* Mots très longs (TRIANGLE, RECTANGLE, VIOLET...) */
-.carte-lettre.carte-long {
+.carte-lettre.carte-long .carte-texte {
   font-size: 22px;
-  padding: 0 5px;
+  padding: 0 4px;
   line-height: 1.1;
 }
 
@@ -200,6 +204,22 @@ body {
 .feedback .essaie {
   color: #FF5252;
 }
+
+/* ===== 🖼️ ILLUSTRATIONS DANS LES CARTES ===== */
+.carte-emoji {
+  font-size: 52px;
+  line-height: 1;
+  display: block;
+}
+
+.carte-texte {
+  display: block;
+  line-height: 1;
+}
+
+.carte-lettre.carte-syllabe .carte-emoji { font-size: 42px; }
+.carte-lettre.carte-mot .carte-emoji { font-size: 42px; }
+.carte-lettre.carte-long .carte-emoji { font-size: 34px; }
 
 /* ===== ☀️ DÉCOR ANIMÉ ===== */
 .decor {
@@ -381,6 +401,8 @@ body {
   max-width: 600px;
   margin-bottom: 10px;
   gap: 15px;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .bouton-menu {

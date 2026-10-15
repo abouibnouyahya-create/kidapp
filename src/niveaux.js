@@ -9,17 +9,70 @@ const MINUSCULES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 
 // 📘 Syllabes
 const SYLLABES = ['MA', 'PA', 'LA', 'TA', 'SA', 'RA', 'NA', 'MI', 'PI', 'LI', 'MO', 'PO', 'LO', 'ME', 'PE', 'LE'];
 
-// 📙 Petits mots
-const MOTS = ['CHAT', 'LUNE', 'PAPA', 'MAMAN', 'BÉBÉ', 'LOUP', 'ROI', 'AMI', 'ÉCOLE', 'LIT', 'EAU', 'PAIN'];
+// 📙 Petits mots avec emoji associé
+const MOTS = [
+  { texte: 'CHAT', emoji: '🐱' },
+  { texte: 'LUNE', emoji: '🌙' },
+  { texte: 'PAPA', emoji: '👨' },
+  { texte: 'MAMAN', emoji: '👩' },
+  { texte: 'BÉBÉ', emoji: '👶' },
+  { texte: 'LOUP', emoji: '🐺' },
+  { texte: 'ROI', emoji: '👑' },
+  { texte: 'AMI', emoji: '👫' },
+  { texte: 'ÉCOLE', emoji: '🏫' },
+  { texte: 'LIT', emoji: '🛏️' },
+  { texte: 'EAU', emoji: '💧' },
+  { texte: 'PAIN', emoji: '🥖' },
+  { texte: 'SOLEIL', emoji: '☀️' },
+  { texte: 'FLEUR', emoji: '🌸' },
+  { texte: 'OISEAU', emoji: '🐦' },
+];
 
-// 🔢 Chiffres
-const CHIFFRES = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+// 🔢 Chiffres avec points
+const CHIFFRES = [
+  { texte: '1', emoji: '●' },
+  { texte: '2', emoji: '●●' },
+  { texte: '3', emoji: '●●●' },
+  { texte: '4', emoji: '●●●●' },
+  { texte: '5', emoji: '●●●●●' },
+  { texte: '6', emoji: '●●●●●●' },
+  { texte: '7', emoji: '●●●●●●●' },
+  { texte: '8', emoji: '●●●●●●●●' },
+  { texte: '9', emoji: '●●●●●●●●●' },
+  { texte: '10', emoji: '●●●●●●●●●●' },
+];
 
-// ⬛ Formes (en majuscules)
-const FORMES = ['ROND', 'CARRÉ', 'TRIANGLE', 'ÉTOILE', 'CŒUR', 'LOSANGE', 'RECTANGLE'];
+// ⬛ Formes avec leur emoji
+const FORMES = [
+  { texte: 'ROND', emoji: '⚫' },
+  { texte: 'CARRÉ', emoji: '⬛' },
+  { texte: 'TRIANGLE', emoji: '🔺' },
+  { texte: 'ÉTOILE', emoji: '⭐' },
+  { texte: 'CŒUR', emoji: '❤️' },
+  { texte: 'LOSANGE', emoji: '🔷' },
+  { texte: 'RECTANGLE', emoji: '▬' },
+];
 
-// 🌈 Couleurs
-const COULEURS = ['ROUGE', 'BLEU', 'JAUNE', 'VERT', 'ROSE', 'VIOLET', 'ORANGE', 'NOIR', 'BLANC'];
+// 🌈 Couleurs avec pastille de couleur
+const COULEURS = [
+  { texte: 'ROUGE', emoji: '🔴' },
+  { texte: 'BLEU', emoji: '🔵' },
+  { texte: 'JAUNE', emoji: '🟡' },
+  { texte: 'VERT', emoji: '🟢' },
+  { texte: 'VIOLET', emoji: '🟣' },
+  { texte: 'ORANGE', emoji: '🟠' },
+  { texte: 'NOIR', emoji: '⚫' },
+  { texte: 'BLANC', emoji: '⚪' },
+  { texte: 'MARRON', emoji: '🟤' },
+];
+
+// ✏️ Fonction qui transforme un item en texte + emoji (pour uniformiser)
+function normaliser(items) {
+  return items.map(item => {
+    if (typeof item === 'string') return { texte: item, emoji: null };
+    return item;
+  });
+}
 
 export const NIVEAUX = {
   lettres: {
@@ -27,24 +80,24 @@ export const NIVEAUX = {
     emoji: '📗',
     description: 'A, B, C...',
     couleur: '#4CAF50',
-    items: MAJUSCULES,
-    consigne: (item) => `Trouve la lettre ${item} !`,
+    items: normaliser(MAJUSCULES),
+    consigne: (item) => `Trouve la lettre ${item.texte} !`,
   },
   minuscules: {
     nom: 'Minuscules',
     emoji: '📗',
     description: 'a, b, c...',
     couleur: '#66BB6A',
-    items: MINUSCULES,
-    consigne: (item) => `Trouve la lettre ${item} !`,
+    items: normaliser(MINUSCULES),
+    consigne: (item) => `Trouve la lettre ${item.texte} !`,
   },
   syllabes: {
     nom: 'Syllabes',
     emoji: '📘',
     description: 'MA, PA, LA...',
     couleur: '#2196F3',
-    items: SYLLABES,
-    consigne: (item) => `Trouve la syllabe ${item} !`,
+    items: normaliser(SYLLABES),
+    consigne: (item) => `Trouve la syllabe ${item.texte} !`,
   },
   mots: {
     nom: 'Petits mots',
@@ -52,7 +105,7 @@ export const NIVEAUX = {
     description: 'CHAT, LUNE...',
     couleur: '#FF9800',
     items: MOTS,
-    consigne: (item) => `Trouve le mot ${item} !`,
+    consigne: (item) => `Trouve le mot ${item.texte} !`,
   },
   chiffres: {
     nom: 'Chiffres',
@@ -60,7 +113,7 @@ export const NIVEAUX = {
     description: '1, 2, 3...',
     couleur: '#9C27B0',
     items: CHIFFRES,
-    consigne: (item) => `Trouve le chiffre ${item} !`,
+    consigne: (item) => `Trouve le chiffre ${item.texte} !`,
   },
   formes: {
     nom: 'Formes',
@@ -68,7 +121,7 @@ export const NIVEAUX = {
     description: 'rond, carré...',
     couleur: '#E91E63',
     items: FORMES,
-    consigne: (item) => `Trouve la forme ${item} !`,
+    consigne: (item) => `Trouve la forme ${item.texte} !`,
   },
   couleurs: {
     nom: 'Couleurs',
@@ -76,6 +129,6 @@ export const NIVEAUX = {
     description: 'rouge, bleu...',
     couleur: '#FF5722',
     items: COULEURS,
-    consigne: (item) => `Trouve la couleur ${item} !`,
+    consigne: (item) => `Trouve la couleur ${item.texte} !`,
   },
 };
