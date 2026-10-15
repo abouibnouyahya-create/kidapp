@@ -858,3 +858,161 @@ body {
 .mascotte, .mascotte-jeu, .mascotte-victoire {
   filter: drop-shadow(0 0 15px rgba(255, 200, 50, 0.4));
 }
+/* ===== 📊 ÉCRAN STATS ===== */
+.titre-stats {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: #FF6B35;
+  margin: 0 0 25px;
+  text-shadow: 3px 3px 0 #FFF;
+}
+
+.grille-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 25px;
+}
+
+.stat-carte {
+  background: white;
+  border: 4px solid #FFD93D;
+  border-radius: 20px;
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 6px 0 #E0B000, 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.stat-emoji {
+  font-size: 36px;
+}
+
+.stat-valeur {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #FF6B35;
+}
+
+.stat-label {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-align: center;
+}
+
+.section-stats {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.stats-sous-titre {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 15px;
+}
+
+.stats-vide {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 16px;
+  color: #888;
+  text-align: center;
+  margin: 0;
+}
+
+.liste-progression {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ligne-progression {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.prog-emoji {
+  font-size: 22px;
+  width: 30px;
+}
+
+.prog-nom {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  min-width: 100px;
+  text-align: left;
+}
+
+.barre-prog {
+  flex: 1;
+  height: 14px;
+  background: #EEE;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.barre-prog-remplie {
+  height: 100%;
+  border-radius: 50px;
+  transition: width 0.5s ease;
+}
+
+.prog-valeur {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FF6B35;
+  min-width: 35px;
+  text-align: right;
+}
+
+.grille-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.badge-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border-radius: 15px;
+  padding: 10px 15px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.badge-stats-emoji {
+  font-size: 32px;
+}
+
+.badge-stats-nom {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  flex: 1;
+  text-align: left;
+}
+
+.badge-stats-desc {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 13px;
+  color: #888;
+}

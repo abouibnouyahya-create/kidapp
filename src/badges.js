@@ -5,7 +5,13 @@ export const BADGES = {
     id: 'premiere_lettre',
     emoji: '🌱',
     nom: 'Première lettre',
-    description: 'Trouve ta première lettre',
+    description: 'Trouve ta première bonne réponse',
+  },
+  serie_5: {
+    id: 'serie_5',
+    emoji: '🔥',
+    nom: 'En feu !',
+    description: '5 bonnes réponses d\'affilée',
   },
   expert_lettres: {
     id: 'expert_lettres',
@@ -31,13 +37,26 @@ export const BADGES = {
     nom: 'Champion des mots',
     description: '10 bonnes réponses en Petits mots',
   },
-  serie_5: {
-    id: 'serie_5',
-    emoji: '🔥',
-    nom: 'En feu !',
-    description: '5 bonnes réponses d\'affilée',
+  roi_chiffres: {
+    id: 'roi_chiffres',
+    emoji: '🔢',
+    nom: 'Roi des chiffres',
+    description: '10 bonnes réponses en Chiffres',
+  },
+  maitre_formes: {
+    id: 'maitre_formes',
+    emoji: '🔷',
+    nom: 'Maître des formes',
+    description: '10 bonnes réponses en Formes',
+  },
+  artiste_couleurs: {
+    id: 'artiste_couleurs',
+    emoji: '🎨',
+    nom: 'Artiste des couleurs',
+    description: '10 bonnes réponses en Couleurs',
   },
 };
+
 // 💾 Fonctions de sauvegarde des badges (localStorage)
 
 const CLE_BADGES = 'kidapp_badges';

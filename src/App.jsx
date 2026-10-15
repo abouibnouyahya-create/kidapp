@@ -10,7 +10,13 @@ import {
   chargerPreferences, sauvegarderPreferences,
   THEMES, PERSONNAGES
 } from './preferences';
+import {
+  chargerStats, sauvegarderStats,
+  ajouterBonneReponse, ajouterMauvaiseReponse,
+  ajouterPartie, ajouterTemps
+} from './stats';
 import EcranPreferences from './EcranPreferences';
+import EcranStats from './EcranStats';
 import renard from './assets/renard.png';
 import './App.css';
 
@@ -48,7 +54,6 @@ function Decor() {
   );
 }
 
-// 🌟 Étoiles volantes pour l'écran de victoire
 function EtoilesVictoire() {
   return (
     <div className="etoiles-victoire">
@@ -72,7 +77,6 @@ function Mascotte({ personnage, className }) {
   return <div className={className + ' mascotte-emoji'}>{p.emoji}</div>;
 }
 
-// 🎵 Choisit un style de musique selon le niveau
 function stylePourNiveau(niveau) {
   if (niveau === 'lettres' || niveau === 'minuscules' || niveau === 'syllabes') {
     return 'calme';
@@ -94,6 +98,8 @@ function App() {
   const [badgesDebloques, setBadgesDebloques] = useState(() => chargerBadges());
   const [badgeAffiche, setBadgeAffiche] = useState(null);
   const [prefs, setPrefs] = useState(() => chargerPreferences());
+  const [stats, setStats] = useState(() => chargerStats());
+  const [debutSession, setDebutSession] = useState(null);
 
   useEffect(() => {
     sauvegarderPreferences(prefs);
@@ -105,7 +111,24 @@ function App() {
     sauvegarderBadges(badgesDebloques);
   }, [badgesDebloques]);
 
-  // 🎵 Musique selon l'écran et le niveau
+  useEffect(() => {
+    sauvegarderStats(stats);
+  }, [stats]);
+
+  // ⏱️ Chrono de session : démarre en jeu, s'arrête en sortant
+  useEffect(() => {
+    if (ecran === 'jeu') {
+      setDebutSession(Date.now());
+    } else if (debutSession) {
+      const secondes = Math.floor((Date.now() - debutSession) / 1000);
+      if (secondes > 0) {
+        setStats(s => ajouterTemps(s, secondes));
+      }
+      setDebutSession(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ecran]);
+
   useEffect(() => {
     if (ecran === 'jeu' && prefs.musiqueActive) {
       const style = stylePourNiveau(niveauActuel);
@@ -133,6 +156,7 @@ function App() {
     setSerie(0);
     setFeedback('');
     setItemClique(null);
+    setStats(s => ajouterPartie(s));   // 📊 Nouvelle partie
     setEcran('jeu');
   };
 
@@ -152,6 +176,9 @@ function App() {
       dire(item.texte);
       setTimeout(() => dire('Bravo !'), 700);
 
+      // 📊 Stats : +1 bonne réponse
+      setStats(s => ajouterBonneReponse(s, niveauActuel));
+
       if (nouveauScore === 1) debloquerBadge('premiere_lettre');
       if (nouvelleSerie === 5) debloquerBadge('serie_5');
       if (nouveauScore === OBJECTIF) {
@@ -159,6 +186,9 @@ function App() {
         if (niveauActuel === 'minuscules') debloquerBadge('expert_minuscules');
         if (niveauActuel === 'syllabes') debloquerBadge('roi_syllabes');
         if (niveauActuel === 'mots') debloquerBadge('champion_mots');
+        if (niveauActuel === 'chiffres') debloquerBadge('roi_chiffres');
+        if (niveauActuel === 'formes') debloquerBadge('maitre_formes');
+        if (niveauActuel === 'couleurs') debloquerBadge('artiste_couleurs');
       }
 
       if (nouveauScore >= OBJECTIF) {
@@ -182,6 +212,9 @@ function App() {
       rate();
       dire('Essaie encore');
 
+      // 📊 Stats : +1 mauvaise réponse
+      setStats(s => ajouterMauvaiseReponse(s));
+
       setTimeout(() => {
         setFeedback('');
         setItemClique(null);
@@ -194,6 +227,7 @@ function App() {
     setScore(0);
     setSerie(0);
     setManche(nouvelleManche(niveauActuel));
+    setStats(s => ajouterPartie(s));
     setEcran('jeu');
   };
 
@@ -239,6 +273,13 @@ function App() {
           >
             ⚙️ MES PRÉFÉRENCES
           </button>
+          <button
+            className="bouton-jouer bouton-secondaire"
+            onClick={() => setEcran('stats')}
+            style={{ background: 'linear-gradient(180deg, #FFD93D 0%, #FFA500 100%)', boxShadow: '0 10px 0 #CC8400, 0 15px 25px rgba(0,0,0,0.2)' }}
+          >
+            📊 MES STATS
+          </button>
           {badgesDebloques.length > 0 && (
             <p className="compteur-badges">
               🏅 {badgesDebloques.length} badge{badgesDebloques.length > 1 ? 's' : ''} gagné{badgesDebloques.length > 1 ? 's' : ''} !
@@ -255,6 +296,16 @@ function App() {
       <>
         <Decor />
         <EcranPreferences prefs={prefs} setPrefs={setPrefs} onRetour={retourAccueil} />
+      </>
+    );
+  }
+
+  // =============== ÉCRAN STATS ===============
+  if (ecran === 'stats') {
+    return (
+      <>
+        <Decor />
+        <EcranStats stats={stats} badgesDebloques={badgesDebloques} onRetour={retourAccueil} />
       </>
     );
   }
