@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import {
   dire, pop, rate, fanfare, fanfareLongue, transition, direLettre,
-  demarrerMusique, arreterMusique
+  demarrerMusique, arreterMusique, feliciter, rire, applaudissements
 } from './sons';
 import { NIVEAUX } from './niveaux';
 import { BADGES, chargerBadges, sauvegarderBadges } from './badges';
@@ -115,7 +115,6 @@ function App() {
     sauvegarderStats(stats);
   }, [stats]);
 
-  // ⏱️ Chrono de session : démarre en jeu, s'arrête en sortant
   useEffect(() => {
     if (ecran === 'jeu') {
       setDebutSession(Date.now());
@@ -156,7 +155,7 @@ function App() {
     setSerie(0);
     setFeedback('');
     setItemClique(null);
-    setStats(s => ajouterPartie(s));   // 📊 Nouvelle partie
+    setStats(s => ajouterPartie(s));
     setEcran('jeu');
   };
 
@@ -174,13 +173,15 @@ function App() {
       lancerConfettis();
       fanfare();
       dire(item.texte);
-      setTimeout(() => dire('Bravo !'), 700);
+      setTimeout(() => feliciter(), 700);
 
-      // 📊 Stats : +1 bonne réponse
       setStats(s => ajouterBonneReponse(s, niveauActuel));
 
       if (nouveauScore === 1) debloquerBadge('premiere_lettre');
-      if (nouvelleSerie === 5) debloquerBadge('serie_5');
+      if (nouvelleSerie === 5) {
+        debloquerBadge('serie_5');
+        setTimeout(() => rire(), 1800);
+      }
       if (nouveauScore === OBJECTIF) {
         if (niveauActuel === 'lettres') debloquerBadge('expert_lettres');
         if (niveauActuel === 'minuscules') debloquerBadge('expert_minuscules');
@@ -195,6 +196,8 @@ function App() {
         setTimeout(() => {
           lancerConfettis(400);
           fanfareLongue();
+          applaudissements();
+          setTimeout(() => dire('Tu as tout trouvé !'), 1500);
           setEcran('victoire');
         }, 1500);
         return;
@@ -212,7 +215,6 @@ function App() {
       rate();
       dire('Essaie encore');
 
-      // 📊 Stats : +1 mauvaise réponse
       setStats(s => ajouterMauvaiseReponse(s));
 
       setTimeout(() => {

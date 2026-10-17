@@ -20,6 +20,11 @@ function prefActive(cle) {
   }
 }
 
+// 🎵 Récupère le contexte audio
+function getAudioCtx() {
+  return new (window.AudioContext || window.webkitAudioContext)();
+}
+
 // 🗣️ Voix française
 export function dire(texte, options = {}) {
   if (!('speechSynthesis' in window)) return;
@@ -42,9 +47,74 @@ export function direLettre(lettre) {
   dire(texte);
 }
 
-// 🎵 Récupère le contexte audio
-function getAudioCtx() {
-  return new (window.AudioContext || window.webkitAudioContext)();
+// 🎉 Félicitations variées (au lieu de toujours "Bravo !")
+const FELICITATIONS = [
+  'Bravo !',
+  'Super !',
+  'Génial !',
+  'Waouh !',
+  'Excellent !',
+  'Trop fort !',
+  'Tu gères !',
+  'Fantastique !',
+  'Magnifique !',
+  'Champion !',
+];
+
+export function feliciter() {
+  const phrase = FELICITATIONS[Math.floor(Math.random() * FELICITATIONS.length)];
+  dire(phrase);
+}
+
+// 🎊 Rire joyeux
+export function rire() {
+  if (!prefActive('voixActive')) return;
+  const audioCtx = getAudioCtx();
+  const notes = [880, 990, 880];
+
+  notes.forEach((freq, i) => {
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.type = 'sine';
+    oscillator.frequency.value = freq;
+
+    const debut = audioCtx.currentTime + i * 0.15;
+    gainNode.gain.setValueAtTime(0, debut);
+    gainNode.gain.linearRampToValueAtTime(0.12, debut + 0.03);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, debut + 0.18);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.start(debut);
+    oscillator.stop(debut + 0.2);
+  });
+}
+
+// 👏 Applaudissements
+export function applaudissements() {
+  if (!prefActive('voixActive')) return;
+  const audioCtx = getAudioCtx();
+  const duree = 0.8;
+
+  const sampleRate = audioCtx.sampleRate;
+  const buffer = audioCtx.createBuffer(1, sampleRate * duree, sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2);
+  }
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = 0.15;
+
+  source.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  source.start();
 }
 
 // 🖱️ Petit "pop" au clic
@@ -87,7 +157,7 @@ export function rate() {
   oscillator.stop(audioCtx.currentTime + 0.25);
 }
 
-// 🎉 Fanfare de victoire longue et joyeuse
+// 🎉 Fanfare de victoire longue
 export function fanfareLongue() {
   const audioCtx = getAudioCtx();
   const notes = [523, 587, 659, 698, 784, 880, 988, 1046];
@@ -137,7 +207,7 @@ export function fanfare() {
   });
 }
 
-// 🎼 Son de transition entre écrans (petit "whoosh" montant)
+// 🎼 Son de transition entre écrans
 export function transition() {
   const audioCtx = getAudioCtx();
   const oscillator = audioCtx.createOscillator();
@@ -159,18 +229,14 @@ export function transition() {
 
 // 🎵 Mélodies différentes par ambiance
 const MELODIES = {
-  // Douce, posée → pour les lettres
   calme: [392, 440, 494, 523, 494, 440, 392, 349],
-  // Joyeuse, dansante → pour les mots/couleurs
   joyeuse: [523, 587, 659, 587, 523, 659, 784, 659],
-  // Rythmée → pour les chiffres
   rythmee: [440, 440, 523, 523, 440, 587, 587, 523],
 };
 
 // 🎵 Musique d'ambiance
 let musiqueInterval = null;
 let audioCtxMusique = null;
-let melodieActuelle = 'joyeuse';
 
 export function demarrerMusique(style = 'joyeuse') {
   if (!prefActive('musiqueActive')) return;
@@ -180,7 +246,6 @@ export function demarrerMusique(style = 'joyeuse') {
     audioCtxMusique = new (window.AudioContext || window.webkitAudioContext)();
   }
 
-  melodieActuelle = style;
   const melodie = MELODIES[style] || MELODIES.joyeuse;
   let index = 0;
 

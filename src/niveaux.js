@@ -28,18 +28,18 @@ const MOTS = [
   { texte: 'OISEAU', emoji: '🐦' },
 ];
 
-// 🔢 Chiffres avec points
+// 🔢 Chiffres (sans points, juste le grand chiffre)
 const CHIFFRES = [
-  { texte: '1', emoji: '●' },
-  { texte: '2', emoji: '●●' },
-  { texte: '3', emoji: '●●●' },
-  { texte: '4', emoji: '●●●●' },
-  { texte: '5', emoji: '●●●●●' },
-  { texte: '6', emoji: '●●●●●●' },
-  { texte: '7', emoji: '●●●●●●●' },
-  { texte: '8', emoji: '●●●●●●●●' },
-  { texte: '9', emoji: '●●●●●●●●●' },
-  { texte: '10', emoji: '●●●●●●●●●●' },
+  { texte: '1' },
+  { texte: '2' },
+  { texte: '3' },
+  { texte: '4' },
+  { texte: '5' },
+  { texte: '6' },
+  { texte: '7' },
+  { texte: '8' },
+  { texte: '9' },
+  { texte: '10' },
 ];
 
 // ⬛ Formes avec leur emoji
@@ -66,7 +66,7 @@ const COULEURS = [
   { texte: 'MARRON', emoji: '🟤' },
 ];
 
-// ✏️ Fonction qui transforme un item en texte + emoji (pour uniformiser)
+// ✏️ Transforme un tableau de strings en tableau d'objets { texte, emoji: null }
 function normaliser(items) {
   return items.map(item => {
     if (typeof item === 'string') return { texte: item, emoji: null };
