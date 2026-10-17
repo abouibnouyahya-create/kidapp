@@ -17,6 +17,7 @@ import {
 } from './stats';
 import EcranPreferences from './EcranPreferences';
 import EcranStats from './EcranStats';
+import EcranDecouverte from './EcranDecouverte';
 import renard from './assets/renard.png';
 import './App.css';
 
@@ -146,6 +147,7 @@ function App() {
     setTimeout(() => setBadgeAffiche(null), 2500);
   };
 
+  // 🎯 LANCEMENT DU JEU (avec passage par la découverte si nécessaire)
   const choisirNiveau = (niveau) => {
     transition();
     pop();
@@ -156,6 +158,18 @@ function App() {
     setFeedback('');
     setItemClique(null);
     setStats(s => ajouterPartie(s));
+
+    // Si c'est les lettres ou les chiffres, on force la découverte
+    if (niveau === 'lettres' || niveau === 'chiffres') {
+      setEcran('decouverte');
+    } else {
+      setEcran('jeu');
+    }
+  };
+
+  // 🎓 FIN DE LA DÉCOUVERTE -> On lance le jeu
+  const terminerDecouverte = () => {
+    transition();
     setEcran('jeu');
   };
 
@@ -345,6 +359,21 @@ function App() {
             ⬅️ RETOUR
           </button>
         </div>
+      </>
+    );
+  }
+
+  // =============== ÉCRAN DÉCOUVERTE (Alphabet / Chiffres) ===============
+  if (ecran === 'decouverte') {
+    return (
+      <>
+        <Decor />
+        <EcranDecouverte
+          type={niveauActuel === 'lettres' ? 'alphabet' : 'chiffres'}
+          onTerminer={terminerDecouverte}
+          onRetour={retourNiveaux}
+          theme={theme}
+        />
       </>
     );
   }

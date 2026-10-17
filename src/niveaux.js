@@ -1,10 +1,10 @@
 // 📚 Contenu des niveaux de KidApp
 
-// 🔤 Lettres MAJUSCULES
-const MAJUSCULES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V'];
+// 🔤 Lettres MAJUSCULES (A à Z complet)
+const MAJUSCULES = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-// 🔡 Lettres minuscules
-const MINUSCULES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v'];
+// 🔡 Lettres minuscules (a à z complet)
+const MINUSCULES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
 // 📘 Syllabes
 const SYLLABES = ['MA', 'PA', 'LA', 'TA', 'SA', 'RA', 'NA', 'MI', 'PI', 'LI', 'MO', 'PO', 'LO', 'ME', 'PE', 'LE'];

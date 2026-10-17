@@ -47,18 +47,11 @@ export function direLettre(lettre) {
   dire(texte);
 }
 
-// 🎉 Félicitations variées (au lieu de toujours "Bravo !")
+// 🎉 Félicitations variées
 const FELICITATIONS = [
-  'Bravo !',
-  'Super !',
-  'Génial !',
-  'Waouh !',
-  'Excellent !',
-  'Trop fort !',
-  'Tu gères !',
-  'Fantastique !',
-  'Magnifique !',
-  'Champion !',
+  'Bravo !', 'Super !', 'Génial !', 'Waouh !',
+  'Excellent !', 'Trop fort !', 'Tu gères !', 'Fantastique !',
+  'Magnifique !', 'Champion !',
 ];
 
 export function feliciter() {
